@@ -18,10 +18,19 @@ class CalculatorController extends Controller
         $this->calculationsService = $calculationsService;
     }
 
+    /**
+     *
+     * Entry point for Calculate api endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function calculate(Request $request)
     {
         try {
+            //remove spaces form equation so we can work with something consitent.
             $equation = str_replace(' ', '', ($request->get('equation')));
+
             if (!$parsedEq = $this->calculatorService->parseEquation($equation)) {
                 return response()->json([
                     'success' => false,
@@ -36,12 +45,15 @@ class CalculatorController extends Controller
                     'data' => ['error' => 'Calculation failed', 'equation' => $equation]
                 ],500);
             }
-            $calculation = "$equation=$results";
+
+            $calculation = "$equation=$results"; //put the equation together with results
             $calculations = $this->calculationsService->updateCalculations($calculation);
+
             return response()->json([
                 'success' => true,
                 'data' => ['results'=> $calculation, 'calculations' => $calculations, 'equation' => $equation ],
             ],200);
+
         }catch (\Exception $exception){
             return response()->json([
                 'success' => false,
@@ -50,6 +62,12 @@ class CalculatorController extends Controller
         }
     }
 
+    /**
+     *
+     * Entry point for get Calculations api call.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getCalculations(){
         try {
             $calculations = $this->calculationsService->getCalculations();

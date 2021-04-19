@@ -9,70 +9,74 @@ let app = new Vue({
     methods: {
     }
 })
+let interval = false;
 
-console.log(app.data);
-// create Http request
-let xhr = new XMLHttpRequest();
 
-//xhr has ran
-xhr.onload = function () {
-
-    let response = (JSON.parse(xhr.response));
-    // Process our return data
-    if (xhr.status >= 200 && xhr.status < 300) {
-        //xhr success
-
-        if(response.success){
-            console.log(response.data)
-            app.calculations = response.data.calculations;
-            app.results = response.data.results;
-            app.error = response.data.error;
-        }else{
-            console.log(response.message);
-        }
-
-    } else {
-
-        //xhr has failed
-        console.log('conection to server failed');
-        app.error = response.data.error;
-    }
-
-};
-
+// initial function that will be run at bottom of file
+init = function(){
+    getCalculations();
+    createInterval();
+}
 // send the xhr request
 calculate = function(){
 
     let equation = getEqValue();
-    //add sort value if required
-    xhr.open('POST', '/api/calculate');
     //get csrf token to make sure it coming from an expected source
     let token = getCookie('XSRF-TOKEN');
-    xhr.setRequestHeader("X-CSRF-TOKEN", token);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify({ "equation" : equation }));
+
+    fetch('/api/calculate', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify({ "equation" : equation }),
+    })
+        .then(response => response.json())
+        .then(response => {
+            if(response.success === true){
+                app.calculations = response.data.calculations;
+                app.results = response.data.results;
+                app.error = "";
+            }else{
+                app.error = response.data.error;
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+
+        });
 }
 
 getEqValue = function(){
     return document.getElementById('equation').value;
 }
-
+// clear all the errors
 clearErrors = function(){
     app.error = "";
 }
-
+// get Calculations from backend application
 getCalculations = function(){
-    //add sort value if required
-    xhr.open('GET', '/api/calculations');
-    //get csrf token to make sure it coming from an expected source
-    let token = getCookie('XSRF-TOKEN');
-    xhr.setRequestHeader("X-CSRF-TOKEN", token);
-    xhr.send(JSON.stringify({ "equation" : equation }));
+    let token = getCookie('XSRF-TOKEN')
+    fetch('/api/calculations', {
+        method: 'GET', // or 'PUT'
+        headers: {
+            'X-CSRF-TOKEN': token
+        }
+    })
+        .then(response => response.json())
+        .then(response => {
+            if(response.success === true){
+                app.calculations = response.data.calculations;
+                app.error = "";
+            }else{
+                app.error = response.data.error;
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
-
-
-
-
 //helper function to get cookies
 getCookie = function(cname) {
     let name = cname + "=";
@@ -89,4 +93,12 @@ getCookie = function(cname) {
     return "";
 }
 
-getCalculations();
+//function to create the set interval
+createInterval = function (){
+    interval = setInterval( function() {
+        getCalculations()
+    },5000);
+}
+
+init();
+

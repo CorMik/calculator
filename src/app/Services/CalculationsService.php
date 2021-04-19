@@ -9,6 +9,9 @@ use App\Models\Repositories\RedisRepo;
 class CalculationsService
 {
 
+    /**
+     * @var RedisRepo
+     */
     protected $redisRepo;
 
     /**
@@ -20,10 +23,20 @@ class CalculationsService
         $this->redisRepo = $redisRepo;
     }
 
+    /**
+     * Get calculations from redis
+     *
+     * @return mixed
+     */
     public function getCalculations(){
         return json_decode($this->redisRepo->getFromKey('calculations'));
     }
 
+    /**
+     * update calculations in redis when we have a new one
+     * @param $newCalculation
+     * @return array|mixed
+     */
     public function updateCalculations($newCalculation){
 
         $calculations = $this->getCalculations();

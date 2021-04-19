@@ -21,7 +21,7 @@ services:
       - "6382:6379"
     networks:
       - calculator
-  php:do
+  php:
     build:
       context: .
       dockerfile: Dockerfile

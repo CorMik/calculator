@@ -7,13 +7,11 @@ namespace App\Services;
 class CalculatorService
 {
     /**
-     * CalculatorService constructor.
+     * Calculate results based on operator
+     *
+     * @param $parsedEq
+     * @return false|float|int|mixed
      */
-    public function __construct()
-    {
-
-    }
-
     public function calcResults($parsedEq){
 
         switch ($parsedEq['operator']){
@@ -30,6 +28,13 @@ class CalculatorService
         return false;
     }
 
+    /**
+     *
+     * parse equation using regex
+     *
+     * @param $equation
+     * @return array|false
+     */
     public function parseEquation($equation){
 
         $pattern = '/^[0-9]+[\.]?[0-9]*[-+*\/]{1}[0-9]+[\.]?[0-9]*$/';
@@ -46,6 +51,13 @@ class CalculatorService
 
     }
 
+    /**
+     *
+     * locate operator in string and break down equation.
+     *
+     * @param $equation
+     * @return false|mixed
+     */
     private function findOperator($equation){
 
         $matches = [];
