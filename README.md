@@ -1,4 +1,4 @@
-# Coding Challenge
+# Calculator
 
 ##  How to run?
 This project I built with docker in mind so if you don't have it you can get it here:
