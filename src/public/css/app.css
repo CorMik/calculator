@@ -1,0 +1,55 @@
+html, body {
+    background:#e4e4e4;
+    color: #636b6f;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 200;
+    height: 100vh;
+    margin: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+
+
+.position-ref {
+    position: relative;
+}
+
+.content {
+    text-align: center;
+}
+
+.title {
+    font-size: 84px;
+}
+
+.flex-container {
+    display:flex;
+    text-align:left;
+    flex-wrap: wrap;
+    width:75%;
+    position: relative;
+    margin-left: 15%
+}
+
+
+.image{
+    float:left;
+    clear:both;
+    padding-right:5px;
+    height: 100%;
+}
+
+.sort-container{
+    margin:10px;
+}
+
+.title-calc {
+    width: 100%;
+}
+.error {
+    color: indianred;
+    font-weight: bold;
+}
